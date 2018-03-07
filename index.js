@@ -1,8 +1,7 @@
 "use strict";
 
+const request = require('request');
 let Service, Characteristic;
-
-let request = require('request');
 
 module.exports = function (homebridge) {
     Service = homebridge.hap.Service;
@@ -15,7 +14,7 @@ module.exports = function (homebridge) {
  * Air Accessory
  */
 function AirQuality(log, config) {
-    this.log = log;
+    this.logger = log;
 
     this.pollingInterval = config.pollingInterval || 300;
 
@@ -34,20 +33,26 @@ function AirQuality(log, config) {
     this.longitude = config.longitude;
 
     if (!this.latitude) {
-        throw new Error("AirQuality - you must provide a config value for 'latitude'.");
+        throw new Error("No 'latitude' config value");
     }
     if (!this.longitude) {
-        throw new Error("AirQuality - you must provide a config value for 'longitude'.");
+        throw new Error("No 'longitude' config value");
     }
 
     this.lastUpdate = 0;
-    this.widgets = {};
+    this.sensors = {};
     this.data = undefined;
 }
 
 AirQuality.prototype = {
 
-    getData: function (params) {
+    // logs information with level, including date and time
+    log: function (level, string) {
+        this.logger[level]("[" + new Date().toISOString() + "] " + string);
+    },
+
+    // wrapper for updateData method (new data/cache)
+    setData: function (params) {
         if (this.lastUpdate === 0 || this.lastUpdate + this.pollingInterval < (new Date().getTime() / 1000) || this.data === undefined) {
             this.fetchData(params);
             return;
@@ -56,30 +61,32 @@ AirQuality.prototype = {
         this.updateData(params);
     },
 
+    // update sensors data
     updateData: function (params) {
         let self = this;
 
         if (params['key'] in self.data) {
-            let widget = self.widgets[params['key']];
+            let widget = self.sensors[params['key']];
 
             widget.setCharacteristic(Characteristic.StatusFault, 0);
             let value = params.formatter(this.data[params['key']]);
-            self.log.info(params['key'] + ' = ' + value);
+            self.log('info', params['key'] + ' = ' + value);
             params.callback(null, value);
             if ('characteristics' in params) {
                 params['characteristics'].forEach(function (characteristic) {
                     let value = characteristic.formatter(self.data[characteristic.key]);
-                    self.log.info(characteristic.key + ' = ' + value);
+                    self.log('info', characteristic.key + ' = ' + value);
                     widget.setCharacteristic(characteristic.characteristic, value);
                 });
             }
         } else {
-            this.widgets[params['key']].setCharacteristic(Characteristic.StatusFault, 1);
-            self.log.info(params['key'] + ' = no value');
+            this.sensors[params['key']].setCharacteristic(Characteristic.StatusFault, 1);
+            self.log('info', params['key'] + ' = no value');
             params.callback(null);
         }
     },
 
+    // fetch new data from Airly
     fetchData: function (params) {
         let self = this;
 
@@ -95,14 +102,14 @@ AirQuality.prototype = {
                 self.lastUpdate = new Date().getTime() / 1000;
                 self.updateData(params);
             } else {
-                self.log.error("fetchData error");
+                self.log('error', "fetchData error");
             }
             self.fetchInProgress = false;
         });
     },
 
     updateAirQualityIndex: function (callback) {
-        this.getData({
+        this.setData({
             'callback': callback,
             'key': 'airQualityIndex',
             'characteristics': [
@@ -128,7 +135,7 @@ AirQuality.prototype = {
     },
 
     updateTemperature: function (callback) {
-        this.getData({
+        this.setData({
             'callback': callback,
             'key': 'temperature',
             'formatter': function (value) {
@@ -138,7 +145,7 @@ AirQuality.prototype = {
     },
 
     updateHumidity: function (callback) {
-        this.getData({
+        this.setData({
             'callback': callback,
             'key': 'humidity',
             'formatter': function (value) {
@@ -157,26 +164,26 @@ AirQuality.prototype = {
             .setCharacteristic(Characteristic.Manufacturer, "Air Quality")
             .setCharacteristic(Characteristic.Model, "API")
             .setCharacteristic(Characteristic.SerialNumber, "0000-0000-0000");
-        this.widgets['information'] = informationService;
+        this.sensors['information'] = informationService;
 
         if (this.showAirQualityIndex) {
             let airQualityIndexSensorService = new Service.AirQualitySensor(this.airQualityIndexName);
             airQualityIndexSensorService.getCharacteristic(Characteristic.AirQuality).on('get', this.updateAirQualityIndex.bind(this));
-            this.widgets['airQualityIndex'] = airQualityIndexSensorService;
+            this.sensors['airQualityIndex'] = airQualityIndexSensorService;
         }
 
         if (this.showTemperature) {
             let temperatureSensorService = new Service.TemperatureSensor(this.temperatureName);
             temperatureSensorService.getCharacteristic(Characteristic.CurrentTemperature).on('get', this.updateTemperature.bind(this));
-            this.widgets['temperature'] = temperatureSensorService;
+            this.sensors['temperature'] = temperatureSensorService;
         }
 
         if (this.showHumidity) {
             let humiditySensorService = new Service.HumiditySensor(this.humidityName);
             humiditySensorService.getCharacteristic(Characteristic.CurrentRelativeHumidity).on('get', this.updateHumidity.bind(this));
-            this.widgets['humidity'] = humiditySensorService;
+            this.sensors['humidity'] = humiditySensorService;
         }
 
-        return Object.values(this.widgets);
+        return Object.values(this.sensors);
     }
 };
