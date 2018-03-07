@@ -1,6 +1,6 @@
 {
   "name": "homebridge-air-quality",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Air Quality by Airly",
   "main": "index.js",
   "keywords": [

@@ -1,6 +1,6 @@
 # Homebridge-air-quality
 
-**Homebridge plugin to show informations of air quality, temperature and humidity, provided by [Airly](https://airly.eu/en/).**
+**[Homebridge](https://github.com/nfarina/homebridge) plugin to show informations about air quality, temperature and humidity, provided by [Airly](https://airly.eu/en/).**
 
 Plugin inspired by [homenridge-airly](https://github.com/beniaminrychter/homebridge-airly).
 
@@ -39,12 +39,12 @@ Plugin inspired by [homenridge-airly](https://github.com/beniaminrychter/homebri
 - `airQualityIndexName` name of air quality sensor (optional, default to `"Air Quality"`)
 - `showHumidity` __show__ or __hide__ humidity sensor (optional, default to `false`)
 - `humidityName` name of humidity sensor (optional, default to `"Humidity"`)
-- `showTemperature` __show__ or __hide__ temperature sensor (optional, default to `true`)
+- `showTemperature` __show__ or __hide__ temperature sensor (optional, default to `false`)
 - `temperatureName` name of temperature sensor (optional, default to `"Temperature"`)
 
 ## Minimal configuration
 
-Minimal configuration consits only 4 lines, but nothing will be shown in HomeApp. You should set `true` to at least one option witch begins with `show...`.
+Minimal configuration consists only 4 lines, but nothing will be shown in HomeApp. You should set `true` to at least one option witch begins with `show...`.
 
 ```json
 "accessories": [
