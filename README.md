@@ -2,6 +2,8 @@
 
 **[Homebridge](https://github.com/nfarina/homebridge) plugin to show informations about air quality, temperature and humidity, provided by [Airly](https://airly.eu/en/).**
 
+[![NPM](https://nodei.co/npm/homebridge-air-quality.png)](https://nodei.co/npm/homebridge-air-quality/)
+
 Plugin inspired by [homenridge-airly](https://github.com/beniaminrychter/homebridge-airly).
 
 ## Instalation

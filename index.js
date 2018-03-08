@@ -1,6 +1,7 @@
 "use strict";
 
 const request = require('request');
+const logger = require('./lib/logger');
 let Service, Characteristic;
 
 module.exports = function (homebridge) {
@@ -14,7 +15,8 @@ module.exports = function (homebridge) {
  * Air Accessory
  */
 function AirQuality(log, config) {
-    this.logger = log;
+    logger.handler = log;
+    console.log(logger);
 
     this.pollingInterval = config.pollingInterval || 300;
 
@@ -46,11 +48,6 @@ function AirQuality(log, config) {
 
 AirQuality.prototype = {
 
-    // logs information with level, including date and time
-    log: function (level, string) {
-        this.logger[level]("[" + new Date().toISOString() + "] " + string);
-    },
-
     // wrapper for updateData method (new data/cache)
     setData: function (params) {
         if (this.lastUpdate === 0 || this.lastUpdate + this.pollingInterval < (new Date().getTime() / 1000) || this.data === undefined) {
@@ -70,18 +67,18 @@ AirQuality.prototype = {
 
             widget.setCharacteristic(Characteristic.StatusFault, 0);
             let value = params.formatter(this.data[params['key']]);
-            self.log('info', params['key'] + ' = ' + value);
+            logger.log('info', params['key'] + ' = ' + value);
             params.callback(null, value);
             if ('characteristics' in params) {
                 params['characteristics'].forEach(function (characteristic) {
                     let value = characteristic.formatter(self.data[characteristic.key]);
-                    self.log('info', characteristic.key + ' = ' + value);
+                    logger.log('info', characteristic.key + ' = ' + value);
                     widget.setCharacteristic(characteristic.characteristic, value);
                 });
             }
         } else {
             this.sensors[params['key']].setCharacteristic(Characteristic.StatusFault, 1);
-            self.log('info', params['key'] + ' = no value');
+            logger.log('info', params['key'] + ' = no value');
             params.callback(null);
         }
     },
@@ -102,7 +99,7 @@ AirQuality.prototype = {
                 self.lastUpdate = new Date().getTime() / 1000;
                 self.updateData(params);
             } else {
-                self.log('error', "fetchData error");
+                logger.log('error', "fetchData error");
             }
             self.fetchInProgress = false;
         });
@@ -116,21 +113,15 @@ AirQuality.prototype = {
                 {
                     'key': 'pm25',
                     'characteristic': Characteristic.PM2_5Density,
-                    'formatter': function (value) {
-                        return parseFloat(value);
-                    }
+                    'formatter': value => parseFloat(value)
                 },
                 {
                     'key': 'pm10',
                     'characteristic': Characteristic.PM10Density,
-                    'formatter': function (value) {
-                        return parseFloat(value);
-                    }
+                    'formatter': value => parseFloat(value)
                 }
             ],
-            'formatter': function (value) {
-                return Math.min(Math.ceil(parseFloat(value) / 25), 5)
-            }
+            'formatter': value => Math.min(Math.ceil(parseFloat(value) / 25), 5)
         });
     },
 
@@ -138,9 +129,7 @@ AirQuality.prototype = {
         this.setData({
             'callback': callback,
             'key': 'temperature',
-            'formatter': function (value) {
-                return Math.round(parseFloat(value))
-            }
+            'formatter': value => Math.round(parseFloat(value))
         });
     },
 
@@ -148,15 +137,11 @@ AirQuality.prototype = {
         this.setData({
             'callback': callback,
             'key': 'humidity',
-            'formatter': function (value) {
-                return Math.round(parseFloat(value))
-            }
+            'formatter': value => Math.round(parseFloat(value))
         });
     },
 
-    identify: function (callback) {
-        callback();
-    },
+    identify: callback => callback(),
 
     getServices: function () {
         let informationService = new Service.AccessoryInformation();

@@ -1,6 +1,6 @@
 {
   "name": "homebridge-air-quality",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "description": "Air Quality by Airly",
   "main": "index.js",
   "keywords": [
@@ -19,8 +19,8 @@
     "url": "https://github.com/mrysz/homebridge-air-quality/issues"
   },
   "engines": {
-    "node": ">=0.12.0",
-    "homebridge": ">=0.2.0"
+    "node": ">=6.4.0",
+    "homebridge": ">=0.4.0"
   },
   "license": "GNU",
   "dependencies": {
