@@ -2,11 +2,12 @@
 
 **[Homebridge](https://github.com/nfarina/homebridge) plugin to show informations about air quality, temperature and humidity, provided by [Airly](https://airly.eu/en/).**
 
-[![NPM](https://nodei.co/npm/homebridge-air-quality.png)](https://nodei.co/npm/homebridge-air-quality/)
-
 Plugin inspired by [homenridge-airly](https://github.com/beniaminrychter/homebridge-airly).
 
 ## Instalation
+
+[![NPM](https://nodei.co/npm/homebridge-air-quality.png)](https://nodei.co/npm/homebridge-air-quality/)
+
 1. Install required package: `npm install -g homebridge-air-quality`.
 1. Create new account in Airly.eu <https://developer.airly.eu/register> and get your individual **API Key**.
 1. Find your coordinates (latitude and longitude). You should be in range of minimum one sensor.  
