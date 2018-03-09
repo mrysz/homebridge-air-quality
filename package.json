@@ -1,6 +1,6 @@
 {
   "name": "homebridge-air-quality",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Air Quality by Airly",
   "main": "index.js",
   "keywords": [
@@ -22,8 +22,14 @@
     "node": ">=6.4.0",
     "homebridge": ">=0.4.0"
   },
-  "license": "GNU",
+  "license": "GPL-3.0",
   "dependencies": {
     "request": "^2.83.0"
+  },
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
   }
 }

@@ -16,7 +16,6 @@ module.exports = function (homebridge) {
  */
 function AirQuality(log, config) {
     logger.handler = log;
-    console.log(logger);
 
     this.pollingInterval = config.pollingInterval || 300;
 
