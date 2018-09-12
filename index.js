@@ -19,6 +19,7 @@ function AirQuality(log, config) {
 
     this.pollingInterval = config.pollingInterval || 300;
 
+    this.name = config.name;
     this.apikey = config.apikey;
 
     this.showAirQualityIndex = config.showAirQualityIndex || false;
@@ -145,7 +146,7 @@ AirQuality.prototype = {
     getServices: function () {
         let informationService = new Service.AccessoryInformation();
         informationService
-            .setCharacteristic(Characteristic.Manufacturer, "Air Quality")
+            .setCharacteristic(Characteristic.Manufacturer, "airly.eu")
             .setCharacteristic(Characteristic.Model, "API")
             .setCharacteristic(Characteristic.SerialNumber, "0000-0000-0000");
         this.sensors['information'] = informationService;

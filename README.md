@@ -18,6 +18,7 @@ Plugin inspired by [homenridge-airly](https://github.com/beniaminrychter/homebri
 "accessories": [
     {
          "accessory":"AirQuality",
+         "name":"Air Quality",
          "apikey":"YOUR_API_KEY",
          "latitude":"YOUR_LATITUDE",
          "longitude":"YOUR_LONGITUDE",
@@ -34,6 +35,7 @@ Plugin inspired by [homenridge-airly](https://github.com/beniaminrychter/homebri
 
 ## Settings
 - `accessory` must be "AirQuality" (required)
+- `name` of the accessory
 - `apikey` API key from Airly Developers (required)
 - `latitude` your latitude e.g. `"52.333658"` (required)
 - `longitude` your longitude e.g. `"20.886986"` (required)
@@ -53,6 +55,7 @@ Minimal configuration consists only 4 lines, but nothing will be shown in HomeAp
 "accessories": [
     {
          "accessory":"AirQuality",
+         "name":"Air Quality",
          "apikey":"YOUR_API_KEY",
          "latitude":"YOUR_LATITUDE",
          "longitude":"YOUR_LONGITUDE",
